@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Калькулятор лизинга таксопарков</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;background:#f5f5f3;color:#1a1a1a;min-height:100vh}
+.app{max-width:860px;margin:0 auto;padding:24px 16px}
+h1{font-size:17px;font-weight:500;margin-bottom:4px}
+.subtitle{font-size:12px;color:#888;margin-bottom:20px}
+.tabs{display:flex;gap:2px;border-bottom:1px solid #e0e0e0;margin-bottom:20px}
+.tab{padding:8px 16px;font-size:13px;cursor:pointer;border:none;background:none;color:#888;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab.active{color:#1a1a1a;border-bottom:2px solid #1a1a1a;font-weight:500}
+.panel{display:none}.panel.active{display:block}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.metric{background:#ebe8e2;border-radius:8px;padding:10px 12px}
+.ml{font-size:11px;color:#888;margin-bottom:3px}
+.mv{font-size:17px;font-weight:500}
+.mv.danger{color:#a32d2d}.mv.success{color:#0f6e56}.mv.info{color:#185fa5}
+.field{margin-bottom:10px}
+.field label{display:block;font-size:11px;color:#888;margin-bottom:3px}
+.field input{width:100%;padding:6px 9px;font-size:13px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a;outline:none}
+.field input:focus{border-color:#999}
+.sec-title{font-size:11px;font-weight:500;color:#888;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
+.card{background:#fff;border:1px solid #e8e8e8;border-radius:12px;padding:14px 16px;margin-bottom:12px}
+.card-title{font-size:12px;font-weight:500;margin-bottom:10px;color:#888}
+.card-title.market{color:#a32d2d}.card-title.sub{color:#0f6e56}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;font-weight:500;padding:6px 7px;border-bottom:1px solid #eee;color:#888;font-size:11px}
+td{padding:6px 7px;border-bottom:1px solid #eee;color:#1a1a1a}
+tr:last-child td{border-bottom:none}
+.right{text-align:right}
+.bold{font-weight:500}
+.row-total td{font-weight:500;background:#f5f5f3}
+.row-danger td{color:#a32d2d;font-weight:500}
+.row-success td{color:#0f6e56;font-weight:500}
+.fbox{background:#f5f5f3;border-radius:8px;padding:9px 12px;font-size:12px;color:#888;margin-bottom:12px;line-height:1.7}
+.fbox strong{color:#1a1a1a;font-weight:500}
+.income-box{background:#e6f1fb;border-radius:8px;padding:8px 12px;font-size:12px;color:#185fa5;margin-bottom:10px}
+.income-box strong{font-weight:500}
+.sep{height:1px;background:#eee;margin:11px 0}
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.compare-card{background:#fff;border:1px solid #e8e8e8;border-radius:12px;padding:14px 16px}
+.compare-card.market-card{border-left:3px solid #a32d2d;border-radius:0 12px 12px 0}
+.compare-card.sub-card{border-left:3px solid #0f6e56;border-radius:0 12px 12px 0}
+.compare-title{font-size:12px;font-weight:500;margin-bottom:10px}
+.compare-title.m{color:#a32d2d}.compare-title.s{color:#0f6e56}
+.kv{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px solid #eee;font-size:12px}
+.kv:last-child{border-bottom:none}
+.kv-label{color:#888}
+.kv-val{font-weight:500}
+.kv-val.danger{color:#a32d2d}.kv-val.success{color:#0f6e56}
+.summary-bar{background:#ebe8e2;border-radius:12px;padding:14px 16px;margin-top:20px}
+.summary-bar-title{font-size:11px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px}
+@media(max-width:600px){.grid2,.grid4{grid-template-columns:1fr}.grid3{grid-template-columns:1fr 1fr}.compare-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+<h1>Калькулятор лизинга таксопарков</h1>
+<div class="subtitle">Субсидирование ставки — Казахстан 2026</div>
+<div class="tabs">
+  <button class="tab active" onclick="switchTab(this,'params')">Параметры</button>
+  <button class="tab" onclick="switchTab(this,'calc')">Расчет</button>
+  <button class="tab" onclick="switchTab(this,'state')">Гос программа</button>
+</div>
+<div id="tab-params" class="panel active">
+  <div class="grid2">
+    <div>
+      <div class="sec-title">Лизинг</div>
+      <div class="field"><label>Стоимость авто (₸)</label><input type="number" id="price" value="8000000" oninput="calc()"></div>
+      <div class="field"><label>Аванс (% от стоимости)</label><input type="number" id="advance" value="10" step="0.1" oninput="calc()"></div>
+      <div class="field"><label>Страховка (% от стоимости, разово)</label><input type="number" id="insurance_pct" value="3" step="0.1" oninput="calc()"></div>
+      <div class="field"><label>Комиссия за сделку (% от стоимости, разово)</label><input type="number" id="deal_pct" value="1" step="0.1" oninput="calc()"></div>
+      <div class="field"><label>Срок лизинга (месяцев)</label><input type="number" id="term" value="36" oninput="calc()"></div>
+      <div class="field"><label>Рыночная ставка (%/год)</label><input type="number" id="rate_market" value="24" step="0.1" oninput="calc()"></div>
+      <div class="field"><label>Субсидируемая ставка (%/год)</label><input type="number" id="rate_sub" value="12.6" step="0.1" oninput="calc()"></div>
+      <div class="field"><label>Остаточная стоимость при продаже (%)</label><input type="number" id="residual" value="60" oninput="calc()"></div>
+    </div>
+    <div>
+      <div class="sec-title">Доход с 1 авто</div>
+      <div class="field"><label>Стоимость аренды в день (₸)</label><input type="number" id="rent_day" value="14000" oninput="calc()"></div>
+      <div class="field"><label>Дней утилизации в месяц</label><input type="number" id="util_days" value="24" oninput="calc()"></div>
+      <div class="field"><label>Доход водителя в месяц (₸)</label><input type="number" id="driver_income" value="300000" oninput="calc()"></div>
+      <div class="field"><label>Комиссия таксопарка (%)</label><input type="number" id="commission" value="4" step="0.1" oninput="calc()"></div>
+      <div id="income-box" class="income-box"></div>
+      <div class="sep"></div>
+      <div class="sec-title">Расходы</div>
+      <div class="field"><label>Операционные расходы в мес. (₸)</label><input type="number" id="opex" value="91724" oninput="calc()"></div>
+      <div class="sep"></div>
+      <div class="sec-title">Программа <span style="font-size:10px;color:#aaa;font-style:italic;text-transform:none;letter-spacing:0;font-weight:400">— опционально, для расчёта субсидирования</span></div>
+      <div class="field"><label>Количество авто</label><input type="number" id="qty" value="6000" oninput="calc()"></div>
+    </div>
+  </div>
+  <div id="summary-bar"></div>
+</div>
+<div id="tab-calc" class="panel">
+  <div class="fbox" id="economy-formula"></div>
+  <div id="economy-table"></div>
+  <div id="schedule-tables"></div>
+  <div id="compare-block"></div>
+</div>
+<div id="tab-state" class="panel">
+  <div class="fbox" id="subsidy-formula"></div>
+  <div class="grid3" id="cards-subsidy"></div>
+  <div id="subsidy-table"></div>
+</div>
+</div>
+<script>
+function fmt(n){return Math.round(n).toLocaleString('ru-RU')}
+function fmtD(n,d){return n.toLocaleString('ru-RU',{minimumFractionDigits:d,maximumFractionDigits:d})}
+function annuity(S,ar,m){var r=ar/100/12;if(r===0)return S/m;return S*r*Math.pow(1+r,m)/(Math.pow(1+r,m)-1)}
+function switchTab(btn,name){document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active')});document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active')});btn.classList.add('active');document.getElementById('tab-'+name).classList.add('active')}
+function buildSchedule(body,ar,term){var r=ar/100/12,pmt=annuity(body,ar,term),bal=body,rows=[];for(var m=1;m<=term;m++){var interest=bal*r,principal=pmt-interest;bal-=principal;if(bal<0.01)bal=0;rows.push({m:m,pmt:pmt,interest:interest,principal:principal,bal:bal})}return rows}
+function groupByYear(rows){var years={};rows.forEach(function(r){var y=Math.ceil(r.m/12);if(!years[y])years[y]={year:y,pmt:0,interest:0,principal:0,bal:r.bal};years[y].pmt+=r.pmt;years[y].interest+=r.interest;years[y].principal+=r.principal;years[y].bal=r.bal});return Object.values(years)}
+function calc(){
+  var price=+document.getElementById('price').value,advPct=+document.getElementById('advance').value,insPct=+document.getElementById('insurance_pct').value,dealPct=+document.getElementById('deal_pct').value,term=+document.getElementById('term').value,rateM=+document.getElementById('rate_market').value,rateS=+document.getElementById('rate_sub').value,qty=+document.getElementById('qty').value,residualPct=+document.getElementById('residual').value,opex=+document.getElementById('opex').value,rentDay=+document.getElementById('rent_day').value,utilDays=+document.getElementById('util_days').value,driverIncome=+document.getElementById('driver_income').value,commission=+document.getElementById('commission').value;
+  var income=rentDay*utilDays+driverIncome*(commission/100);
+  document.getElementById('income-box').innerHTML=fmt(rentDay)+' × '+utilDays+' дн + '+fmt(driverIncome)+' × '+fmtD(commission,1)+'% = <strong>'+fmt(income)+' ₸/мес</strong>';
+  var advance=price*advPct/100,insurance=price*insPct/100,dealFee=price*dealPct/100,body=price-advance,invested=advance+insurance+dealFee;
+  var pmtM=annuity(body,rateM,term),pmtS=annuity(body,rateS,term),diff=pmtM-pmtS,residualVal=price*residualPct/100;
+  var netM=income-opex-pmtM,netS=income-opex-pmtS,totalM=netM*term+residualVal,totalS=netS*term+residualVal;
+  var c2cM=totalM/invested,c2cS=totalS/invested,totalSubAll=diff*term*qty;
+  document.getElementById('summary-bar').innerHTML='<div class="summary-bar"><div class="summary-bar-title">Итоги на 1 авто — вложения и доходность за '+term+' мес.</div><div class="grid3"><div class="metric"><div class="ml">Вложено на старте</div><div class="mv info">'+fmt(invested)+' ₸</div></div><div class="metric"><div class="ml">Итог за период (рыночный)</div><div class="mv '+(totalM>=0?'success':'danger')+'">'+(totalM>=0?'+':'')+fmt(totalM)+' ₸</div></div><div class="metric"><div class="ml">Итог за период (льготный)</div><div class="mv success">+'+fmt(totalS)+' ₸</div></div></div><div class="grid3" style="margin-bottom:0"><div class="metric"><div class="ml">Аванс + страховка + комиссия</div><div class="mv" style="font-size:13px">'+fmt(advance)+' + '+fmt(insurance)+' + '+fmt(dealFee)+' ₸</div></div><div class="metric"><div class="ml">Cash-to-cash (рыночный)</div><div class="mv '+(c2cM>=1?'success':'danger')+'">'+fmtD(c2cM,2)+'x</div></div><div class="metric"><div class="ml">Cash-to-cash (льготный)</div><div class="mv success">'+fmtD(c2cS,2)+'x</div></div></div></div>';
+  var rMr=rateM/100/12,rSr=rateS/100/12;
+  document.getElementById('economy-formula').innerHTML='<strong>Доход/мес:</strong> '+fmt(rentDay)+' × '+utilDays+' дн + '+fmt(driverIncome)+' × '+fmtD(commission,1)+'% = <strong>'+fmt(income)+' ₸</strong><br><strong>Аннуитет рыночный ('+fmtD(rateM,1)+'%):</strong> '+fmt(body)+' × '+fmtD(rMr,6)+' × (1+'+fmtD(rMr,6)+')^'+term+' / ((1+'+fmtD(rMr,6)+')^'+term+'−1) = <strong>'+fmt(pmtM)+' ₸/мес</strong><br><strong>Аннуитет льготный ('+fmtD(rateS,1)+'%):</strong> '+fmt(body)+' × '+fmtD(rSr,6)+' × (1+'+fmtD(rSr,6)+')^'+term+' / ((1+'+fmtD(rSr,6)+')^'+term+'−1) = <strong>'+fmt(pmtS)+' ₸/мес</strong>';
+  document.getElementById('economy-table').innerHTML='<div class="card"><div class="card-title">Сравнительная таблица</div><table><thead><tr><th>Показатель</th><th>Расчёт</th><th class="right">Рыночный ('+fmtD(rateM,1)+'%)</th><th class="right">Льготный ('+fmtD(rateS,1)+'%)</th></tr></thead><tbody><tr><td>Доход</td><td>аренда + комиссия с водителя</td><td class="right">'+fmt(income)+' ₸</td><td class="right">'+fmt(income)+' ₸</td></tr><tr><td>Операционные расходы</td><td>ТО, страховка, адм.</td><td class="right">−'+fmt(opex)+' ₸</td><td class="right">−'+fmt(opex)+' ₸</td></tr><tr><td>Лизинговый платёж</td><td>аннуитет, тело '+fmt(body)+' ₸</td><td class="right" style="color:#a32d2d">−'+fmt(pmtM)+' ₸</td><td class="right" style="color:#0f6e56">−'+fmt(pmtS)+' ₸</td></tr><tr class="'+(netM>=0?'row-success':'row-danger')+'"><td>Результат / мес</td><td></td><td class="right">'+(netM>=0?'+':'')+fmt(netM)+' ₸</td><td class="right">'+(netS>=0?'+':'')+fmt(netS)+' ₸</td></tr><tr><td>Продажа авто (мес. '+term+')</td><td>остаток '+residualPct+'%</td><td class="right">+'+fmt(residualVal)+' ₸</td><td class="right">+'+fmt(residualVal)+' ₸</td></tr><tr class="row-total"><td>Итог за '+term+' мес.</td><td></td><td class="right">'+(totalM>=0?'+':'')+fmt(totalM)+' ₸</td><td class="right" style="color:#0f6e56">+'+fmt(totalS)+' ₸</td></tr></tbody></table></div>';
+  var schedM=groupByYear(buildSchedule(body,rateM,term)),schedS=groupByYear(buildSchedule(body,rateS,term));
+  var mktRows=schedM.map(function(r){return '<tr><td>'+r.year+' год</td><td class="right">'+fmt(r.pmt)+' ₸</td><td class="right" style="color:#a32d2d">'+fmt(r.interest)+' ₸</td><td class="right">'+fmt(r.principal)+' ₸</td><td class="right">'+fmt(r.bal)+' ₸</td></tr>'}).join('');
+  var subRows=schedS.map(function(r){return '<tr><td>'+r.year+' год</td><td class="right">'+fmt(r.pmt)+' ₸</td><td class="right" style="color:#0f6e56">'+fmt(r.interest)+' ₸</td><td class="right">'+fmt(r.principal)+' ₸</td><td class="right">'+fmt(r.bal)+' ₸</td></tr>'}).join('');
+  document.getElementById('schedule-tables').innerHTML='<div class="card"><div class="card-title market">График лизинга — рыночная ставка ('+fmtD(rateM,1)+'%)</div><table><thead><tr><th>Период</th><th class="right">Платёж/год</th><th class="right">Проценты</th><th class="right">Погашение тела</th><th class="right">Остаток долга</th></tr></thead><tbody>'+mktRows+'</tbody></table></div><div class="card"><div class="card-title sub">График лизинга — льготная ставка ('+fmtD(rateS,1)+'%)</div><table><thead><tr><th>Период</th><th class="right">Платёж/год</th><th class="right">Проценты</th><th class="right">Погашение тела</th><th class="right">Остаток долга</th></tr></thead><tbody>'+subRows+'</tbody></table></div>';
+  document.getElementById('compare-block').innerHTML='<div class="compare-grid"><div class="compare-card market-card"><div class="compare-title m">Рыночный лизинг ('+fmtD(rateM,1)+'%)</div><div class="kv"><span class="kv-label">Вложено на старте</span><span class="kv-val">'+fmt(invested)+' ₸</span></div><div class="kv"><span class="kv-label">Платёж / мес</span><span class="kv-val danger">'+fmt(pmtM)+' ₸</span></div><div class="kv"><span class="kv-label">Результат / мес</span><span class="kv-val '+(netM>=0?'success':'danger')+'">'+(netM>=0?'+':'')+fmt(netM)+' ₸</span></div><div class="kv"><span class="kv-label">Итог за '+term+' мес.</span><span class="kv-val '+(totalM>=0?'success':'danger')+'">'+(totalM>=0?'+':'')+fmt(totalM)+' ₸</span></div><div class="kv"><span class="kv-label">Cash-to-cash</span><span class="kv-val '+(c2cM>=1?'success':'danger')+'">'+fmtD(c2cM,2)+'x</span></div></div><div class="compare-card sub-card"><div class="compare-title s">Льготный лизинг ('+fmtD(rateS,1)+'%)</div><div class="kv"><span class="kv-label">Вложено на старте</span><span class="kv-val">'+fmt(invested)+' ₸</span></div><div class="kv"><span class="kv-label">Платёж / мес</span><span class="kv-val success">'+fmt(pmtS)+' ₸</span></div><div class="kv"><span class="kv-label">Результат / мес</span><span class="kv-val success">+'+fmt(netS)+' ₸</span></div><div class="kv"><span class="kv-label">Итог за '+term+' мес.</span><span class="kv-val success">+'+fmt(totalS)+' ₸</span></div><div class="kv"><span class="kv-label">Cash-to-cash</span><span class="kv-val success">'+fmtD(c2cS,2)+'x</span></div></div></div>';
+  document.getElementById('subsidy-formula').innerHTML='Субсидия/авто/мес: <strong>'+fmt(pmtM)+' − '+fmt(pmtS)+' = '+fmt(diff)+' ₸</strong><br>Итого на '+fmt(qty)+' авто за '+term+' мес.: <strong>'+fmt(diff)+' × '+qty+' × '+term+' = '+fmt(totalSubAll)+' ₸ (~'+fmtD(totalSubAll/1e9,2)+' млрд ₸)</strong>';
+  document.getElementById('cards-subsidy').innerHTML='<div class="metric"><div class="ml">Субсидия / авто / мес</div><div class="mv info">'+fmt(diff)+' ₸</div></div><div class="metric"><div class="ml">Субсидия / год (все авто)</div><div class="mv info">'+fmtD(diff*qty*12/1e9,2)+' млрд ₸</div></div><div class="metric"><div class="ml">Субсидия итого за '+term+' мес.</div><div class="mv danger">'+fmtD(totalSubAll/1e9,2)+' млрд ₸</div></div>';
+  var rows=[1,2,3,4,5].filter(function(y){return y*12<=term+6}).map(function(y){var m=Math.min(y*12,term),s=diff*qty*m;return '<tr><td>'+y+' '+(y===1?'год':y<5?'года':'лет')+' ('+m+' мес.)</td><td class="right">'+fmt(diff*qty)+' ₸/мес</td><td class="right">'+fmt(s)+' ₸</td></tr>'}).join('');
+  document.getElementById('subsidy-table').innerHTML='<div class="card"><div class="card-title">Бюджет государства</div><table><thead><tr><th>Срок</th><th class="right">В месяц ('+fmt(qty)+' авто)</th><th class="right">Накоплено (₸)</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+}
+calc();
+</script>
+</body>
+</html>
