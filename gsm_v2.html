@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GSM Алматы — Модель v2</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"><\/script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Manrope:wght@400;500;600;700&display=swap');
+:root{--bg:#0f0f11;--bg2:#17171a;--bg3:#1e1e22;--border:#2a2a30;--border2:#38383f;--text:#e8e8ec;--text2:#9191a0;--text3:#5a5a6a;--red:#e05555;--rdim:#7a2525;--amber:#d4873a;--adim:#6b3d12;--green:#4caf7d;--gdim:#1e5738;--blue:#4a9edd;--bdim:#1a4470;--purple:#9b7fe8;--pdim:#3d2d6e;--teal:#3ecfb2;--mono:"JetBrains Mono",monospace;--sans:"Manrope",sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px}
+.lay{display:grid;grid-template-columns:290px 1fr;min-height:100vh}
+.sb{background:var(--bg2);border-right:1px solid var(--border);padding:16px 13px;overflow-y:auto;position:sticky;top:0;height:100vh}
+.sblogo{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.15em;text-transform:uppercase;margin-bottom:4px}
+.sbtit{font-size:14px;font-weight:700;margin-bottom:14px;line-height:1.3}
+.pg{margin-bottom:12px}
+.pgt{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+.pr{margin-bottom:6px}
+.prl{font-size:11px;color:var(--text2);margin-bottom:1px;display:flex;justify-content:space-between}
+.prv{font-family:var(--mono);font-size:11px;color:var(--text);font-weight:700;background:var(--bg3);padding:1px 5px;border-radius:3px}
+input[type=range]{width:100%;accent-color:var(--blue);cursor:pointer}
+.hint{font-size:10px;color:var(--text3);margin-top:2px;padding:3px 6px;background:var(--bg3);border-radius:4px;border-left:2px solid var(--border2);line-height:1.4}
+.main{padding:20px 24px;overflow-x:hidden}
+.mtit{font-size:19px;font-weight:700;margin-bottom:3px}
+.msub{font-size:12px;color:var(--text2);margin-bottom:4px}
+.sec{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin:22px 0 10px;display:flex;align-items:center;gap:10px}
+.sec::after{content:"";flex:1;height:1px;background:var(--border)}
+.g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.mc{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:11px 13px}
+.ml{font-size:11px;color:var(--text2);margin-bottom:3px;line-height:1.3}
+.mv{font-family:var(--mono);font-size:17px;font-weight:700;line-height:1.2}
+.ms{font-size:10px;color:var(--text3);margin-top:2px}
+.cr{color:var(--red)}.ca{color:var(--amber)}.cg{color:var(--green)}.cb{color:var(--blue)}.cgr{color:var(--text2)}.ct{color:var(--teal)}
+.cxb{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.cxr{display:flex;justify-content:space-between;align-items:center;padding:9px 13px;border-bottom:1px solid var(--border);font-size:13px;gap:8px}
+.cxr:last-child{border-bottom:none;background:var(--bg3);font-weight:700}
+.cxl{color:var(--text2)}
+.plc{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+.plh{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:5px}
+.pltit{font-size:13px;font-weight:700}
+.bdg{font-size:10px;font-weight:700;font-family:var(--mono);padding:3px 8px;border-radius:5px}
+.br{background:var(--rdim);color:var(--red)}.bg{background:var(--gdim);color:var(--green)}
+.row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;gap:8px}
+.row:last-child{border-bottom:none}
+.row.ind{padding-left:11px}
+.row.sep{border-top:1px solid var(--border2);margin-top:3px;padding-top:7px;font-weight:600}
+.rl{color:var(--text2)}.rls{color:var(--text);font-weight:600}
+.rv{font-family:var(--mono);font-weight:700;font-size:11px;white-space:nowrap}
+.eb{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:12px}
+.etit{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:9px}
+.ecols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.ectit{font-size:12px;font-weight:700;margin-bottom:6px}
+.erow{display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid var(--border)}
+.erow:last-child{border-bottom:none;font-weight:700;padding-top:4px}
+.el{color:var(--text2)}.ev{font-family:var(--mono);font-weight:700}
+.fml{font-size:10px;background:var(--bg3);border-radius:5px;padding:5px 8px;margin-top:6px;color:var(--text2);font-family:var(--mono);line-height:1.6}
+.tw{overflow-x:auto;margin-bottom:6px}
+table{width:100%;border-collapse:collapse;min-width:1040px}
+th{padding:6px 7px;background:var(--bg3);color:var(--text3);font-weight:700;font-size:9px;text-transform:uppercase;letter-spacing:.05em;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap}
+th:first-child{text-align:left}
+td{padding:5px 7px;border-bottom:1px solid var(--border);text-align:right;font-family:var(--mono);font-size:11px;white-space:nowrap;color:var(--text)}
+td:first-child{text-align:left;font-family:var(--sans);color:var(--text2);font-size:11px}
+tr:hover td{background:rgba(255,255,255,.025)}
+tr.ys td{border-top:2px solid var(--border2)}
+tr.yt td{background:var(--bg3);font-weight:700}
+.tag{display:inline-block;font-size:10px;padding:2px 6px;border-radius:4px;font-family:var(--sans);font-weight:600}
+.t26{background:var(--bdim);color:var(--blue)}.t27{background:var(--pdim);color:var(--purple)}
+.chb{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:12px}
+.cw{position:relative;width:100%}
+.leg{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:9px}
+.li{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2)}
+.ls{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.nb{font-size:12px;color:var(--text2);margin-bottom:9px;line-height:1.6}
+.nb strong{color:var(--text);font-weight:600}
+@media(max-width:860px){.lay{grid-template-columns:1fr}.sb{position:static;height:auto}.g4,.g3{grid-template-columns:1fr 1fr}.g2,.ecols{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="lay">
+<aside class="sb">
+  <div class="sblogo">GSM Алматы · v2.0</div>
+  <div class="sbtit">Параметры<br>калькулятора</div>
+  <div class="pg">
+    <div class="pgt">Рынок и тарифы</div>
+    <div class="pr"><div class="prl">Наш средний чек (тенге)<span class="prv" id="lbl_avg">2000</span></div><input type="range" id="p_avg" min="1000" max="4000" step="100" value="2000" oninput="sy('avg');go()"></div>
+    <div class="pr"><div class="prl">Дисконт GSM в 2026 (%)<span class="prv" id="lbl_disc">30</span></div><input type="range" id="p_disc" min="5" max="50" step="1" value="30" oninput="sy('disc');go()"><div class="hint">Насколько GSM дешевле нас в 2026</div></div>
+    <div class="pr"><div class="prl">Рабочих часов авто/день<span class="prv" id="lbl_hrs">10</span></div><input type="range" id="p_hrs" min="8" max="22" step="1" value="10" oninput="sy('hrs');go()"></div>
+    <div class="pr"><div class="prl">Рабочих дней водителя/мес<span class="prv" id="lbl_wdays">25</span></div><input type="range" id="p_wdays" min="20" max="30" step="1" value="25" oninput="sy('wdays');go()"></div>
+  </div>
+  <div class="pg">
+    <div class="pgt">TPH — поездок в час</div>
+    <div class="pr"><div class="prl">TPH старт мес.1<span class="prv" id="lbl_tph0">0.2</span></div><input type="range" id="p_tph0" min="0.1" max="1.5" step="0.1" value="0.2" oninput="sy('tph0');go()"></div>
+    <div class="pr"><div class="prl">TPH цель при 3500 авто<span class="prv" id="lbl_tphT">2.2</span></div><input type="range" id="p_tphT" min="0.5" max="4.0" step="0.1" value="2.2" oninput="sy('tphT');go()"><div class="hint">S-кривая: медленно — быстро — плато</div></div>
+    <div class="pr"><div class="prl">TPH сверх 3500 авто (2027)<span class="prv" id="lbl_tphX">2.2</span></div><input type="range" id="p_tphX" min="0.5" max="4.0" step="0.1" value="2.2" oninput="sy('tphX');go()"><div class="hint">Может упасть при переизбытке авто</div></div>
+  </div>
+  <div class="pg">
+    <div class="pgt">Авто и CAPEX</div>
+    <div class="pr"><div class="prl">Стоимость авто (USD)<span class="prv" id="lbl_car">33000</span></div><input type="range" id="p_car" min="15000" max="55000" step="1000" value="33000" oninput="sy('car');go()"></div>
+    <div class="pr"><div class="prl">Курс USD/тенге<span class="prv" id="lbl_fx">500</span></div><input type="range" id="p_fx" min="400" max="700" step="10" value="500" oninput="sy('fx');go()"></div>
+    <div class="pr"><div class="prl">Простой новых авто (%)<span class="prv" id="lbl_idle">37</span></div><input type="range" id="p_idle" min="0" max="60" step="1" value="37" oninput="sy('idle');go()"><div class="hint">% прироста флота не работает в мес. поставки</div></div>
+    <div class="pr"><div class="prl">Зарядных станций<span class="prv" id="lbl_chrg">75</span></div><input type="range" id="p_chrg" min="30" max="200" step="5" value="75" oninput="sy('chrg');go()"></div>
+    <div class="pr"><div class="prl">Стоимость 1 станции (млн тг)<span class="prv" id="lbl_cst">4</span></div><input type="range" id="p_cst" min="2" max="10" step="0.5" value="4" oninput="sy('cst');go()"></div>
+  </div>
+  <div class="pg">
+    <div class="pgt">Операционные расходы</div>
+    <div class="pr"><div class="prl">ТО авто (тг/авто/мес)<span class="prv" id="lbl_maint">50000</span></div><input type="range" id="p_maint" min="20000" max="120000" step="5000" value="50000" oninput="sy('maint');go()"></div>
+    <div class="pr"><div class="prl">ФОТ команды (млн тг/мес)<span class="prv" id="lbl_fot">12</span></div><input type="range" id="p_fot" min="5" max="40" step="1" value="12" oninput="sy('fot');go()"></div>
+    <div class="pr"><div class="prl">Аренда базы (млн тг/мес)<span class="prv" id="lbl_rent">6</span></div><input type="range" id="p_rent" min="2" max="20" step="1" value="6" oninput="sy('rent');go()"></div>
+    <div class="pr"><div class="prl">Текучка водителей (%/мес)<span class="prv" id="lbl_churn">70</span></div><input type="range" id="p_churn" min="10" max="100" step="5" value="70" oninput="sy('churn');go()"></div>
+    <div class="pr"><div class="prl">Привлечение водителя (тг)<span class="prv" id="lbl_acq">3000</span></div><input type="range" id="p_acq" min="500" max="20000" step="500" value="3000" oninput="sy('acq');go()"></div>
+  </div>
+  <div class="pg">
+    <div class="pgt">Скидки пассажирам</div>
+    <div class="hint" style="margin-bottom:7px">% от GMV, который GSM субсидирует пассажирам — уменьшает выручку GSM напрямую</div>
+    <div class="pr"><div class="prl">Мес. 1-3 (агрессивный старт)<span class="prv" id="lbl_d1">8</span></div><input type="range" id="p_d1" min="1" max="30" step="1" value="8" oninput="sy('d1');go()"></div>
+    <div class="pr"><div class="prl">Мес. 4-7 в 2026<span class="prv" id="lbl_d2">5</span></div><input type="range" id="p_d2" min="1" max="15" step="1" value="5" oninput="sy('d2');go()"></div>
+    <div class="pr"><div class="prl">2027 (удержание базы)<span class="prv" id="lbl_d3">3</span></div><input type="range" id="p_d3" min="0" max="10" step="0.5" value="3" oninput="sy('d3');go()"></div>
+  </div>
+</aside>
+<main class="main">
+  <div class="mtit">GSM Алматы — Инвестиционная модель v2</div>
+  <div class="msub">GMV = TPH x часов/день x активных авто x чек x дней/мес  |  S-кривая роста TPH  |  Простой новых авто  |  2026-2027</div>
+  <div class="sec">CAPEX — разовые вложения</div><div id="cx"></div>
+  <div class="sec">Экономика водителя</div><div class="g3" id="drv"></div>
+  <div class="sec">P&L по годам</div><div class="g2" id="pl"></div>
+  <div class="sec">Итоговый баланс</div><div class="g4" id="bal"></div>
+  <div class="sec">Как считается доход водителя и GSM</div><div id="eco"></div>
+  <div class="sec">Поездки и метрики по месяцам</div>
+  <div class="tw"><table id="tbl"></table></div>
+  <div class="sec">Доход vs расходы по месяцам</div>
+  <div class="chb">
+    <div class="leg">
+      <span class="li"><span class="ls" style="background:#4caf7d"></span>Выручка GSM</span>
+      <span class="li"><span class="ls" style="background:#e05555"></span>Опекс</span>
+      <span class="li"><span class="ls" style="background:#4a9edd;width:20px;height:3px;border-radius:0"></span>EBITDA</span>
+    </div>
+    <div class="cw" style="height:270px"><canvas id="c1" role="img" aria-label="PL chart">P&L GSM 2026-2027</canvas></div>
+  </div>
+  <div class="sec">Накопленный cash flow (CAPEX + EBITDA)</div>
+  <div class="chb">
+    <div class="nb" id="pbn"></div>
+    <div class="cw" style="height:250px"><canvas id="c2" role="img" aria-label="Payback chart">Cash flow</canvas></div>
+  </div>
+</main>
+</div>
+<script>
+var FL26=[300,600,1000,1500,2100,2600,3000];
+var FL27=[3500,4000,4400,4800,5200,5500,5500,5500,5500,5500,5500,5500];
+var AFL=FL26.concat(FL27);
+var ALBL=["Jun","Jul","Aug","Sep","Oct","Nov","Dec"].map(function(l){return l+"26";})
+  .concat(["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"].map(function(l){return l+"27";}));
+var ALBLR=["Июн","Июл","Авг","Сен","Окт","Ноя","Дек"].map(function(l){return l+"26";})
+  .concat(["Янв","Фев","Мар","Апр","Май","Июн","Июл","Авг","Сен","Окт","Ноя","Дек"].map(function(l){return l+"27";}));
+var CPT=9*(60/288)*65*1.3;
+var WASH_MON=500*13;
+var c1=null,c2=null;
+function fB(n){return (n/1e9).toFixed(2)+" млрд";}
+function fBr(n){return (n/1e9).toFixed(2)+" млрд тг";}
+function fM(n){return Math.round(n/1e6).toLocaleString("ru-RU")+" млн тг";}
+function fN(n){return Math.round(n).toLocaleString("ru-RU");}
+function gp(id){return +document.getElementById("p_"+id).value;}
+var FMTS={avg:function(v){return v.toLocaleString("ru-RU");},disc:function(v){return v;},hrs:function(v){return v;},wdays:function(v){return v;},
+  tph0:function(v){return v.toFixed(1);},tphT:function(v){return v.toFixed(1);},tphX:function(v){return v.toFixed(1);},
+  car:function(v){return v.toLocaleString("ru-RU");},fx:function(v){return v;},idle:function(v){return v;},
+  chrg:function(v){return v;},cst:function(v){return v;},maint:function(v){return v.toLocaleString("ru-RU");},
+  fot:function(v){return v;},rent:function(v){return v;},churn:function(v){return v;},
+  acq:function(v){return v.toLocaleString("ru-RU");},d1:function(v){return v;},d2:function(v){return v;},d3:function(v){return v;}};
+function sy(k){document.getElementById("lbl_"+k).textContent=FMTS[k](gp(k));}
+function sig(x){return 1/(1+Math.exp(-10*(x-0.5)));}
+function sCurve(i,n,v0,v1){var s0=sig(0),s1=sig(1),t=i/(n-1);return v0+(v1-v0)*(sig(t)-s0)/(s1-s0);}
+function getTph(i,t0,tT,tX){
+  if(i<=12)return sCurve(i,13,t0,tT);
+  var j=i-12,f=Math.min(j/6,1);return tT+(tX-tT)*f;
+}
+function go(){
+  var AVG=gp("avg"),DISC=gp("disc")/100,HRS=gp("hrs"),WDAYS=gp("wdays");
+  var T0=gp("tph0"),TT=gp("tphT"),TX=gp("tphX");
+  var CAR=gp("car")*gp("fx"),IDLE=gp("idle")/100;
+  var CQ=gp("chrg"),CC=gp("cst")*1e6;
+  var MAINT=gp("maint"),FOT=gp("fot")*1e6,RENT=gp("rent")*1e6;
+  var CHURN=gp("churn")/100,ACQ=gp("acq");
+  var D1=gp("d1")/100,D2=gp("d2")/100,D3=gp("d3")/100;
+  var capF=5500*CAR,capI=CQ*CC,capT=capF+capI;
+  var NET_US=(35000-15000-6000)*WDAYS;
+
+  var mos=AFL.map(function(fleet,i){
+    var prev=i>0?AFL[i-1]:0;
+    var newC=Math.max(0,fleet-prev);
+    var idle=Math.round(newC*IDLE);
+    var active=fleet-idle;
+    var tph=getTph(i,T0,TT,TX);
+    var trDay=tph*HRS,trMon=trDay*WDAYS;
+    var totT=Math.round(active*trMon);
+    var is27=i>=7;
+    var avg=is27?AVG:AVG*(1-DISC);
+    var gmv=totT*avg;
+    var dp=is27?D3:(i<3?D1:D2);
+    var discA=gmv*dp;
+    var rev=gmv*0.75-discA;
+    var drvE=trMon*avg*0.25-WASH_MON;
+    var subPD=Math.max(0,NET_US-drvE);
+    var subT=subPD*active;
+    var acqC=active*CHURN*ACQ;
+    var chrgC=totT*CPT;
+    var wmC=fleet*(WASH_MON+MAINT);
+    var fixC=FOT+RENT;
+    var opex=subT+acqC+chrgC+wmC+fixC;
+    return{fleet:fleet,active:active,idle:idle,newC:newC,tph:tph,trDay:trDay,trMon:trMon,totT:totT,avg:avg,gmv:gmv,dp:dp,discA:discA,rev:rev,drvE:drvE,subPD:subPD,subT:subT,acqC:acqC,chrgC:chrgC,wmC:wmC,fixC:fixC,opex:opex,ebitda:rev-opex,is27:is27};
+  });
+
+  function sum(arr,k){return arr.reduce(function(s,r){return s+r[k];},0);}
+  var r26=mos.slice(0,7),r27=mos.slice(7);
+  function mkY(a){return{tt:sum(a,"totT"),gmv:sum(a,"gmv"),disc:sum(a,"discA"),rev:sum(a,"rev"),sub:sum(a,"subT"),acq:sum(a,"acqC"),chrg:sum(a,"chrgC"),wm:sum(a,"wmC"),fix:sum(a,"fixC"),opex:sum(a,"opex"),ebitda:sum(a,"ebitda")};}
+  var Y26=mkY(r26),Y27=mkY(r27);
+
+  // CAPEX
+  document.getElementById("cx").innerHTML="<div class=\"cxb\"><div class=\"cxr\"><span class=\"cxl\">Флот 5 500 авто x "+fN(gp("car"))+" USD x "+gp("fx")+" тг</span><span class=\"cr\" style=\"font-family:var(--mono);font-weight:700\">"+fBr(capF)+"</span></div><div class=\"cxr\"><span class=\"cxl\">Зарядная инфраструктура ("+CQ+" станций x "+gp("cst")+" млн тг)</span><span class=\"cr\" style=\"font-family:var(--mono);font-weight:700\">"+fBr(capI)+"</span></div><div class=\"cxr\"><span style=\"color:var(--text)\">Итого CAPEX</span><span class=\"cr\" style=\"font-family:var(--mono);font-weight:700;font-size:15px\">"+fBr(capT)+"</span></div></div>";
+
+  // Driver cards
+  var m1=mos[0];
+  document.getElementById("drv").innerHTML="<div class=\"mc\"><div class=\"ml\">Порог чистого дохода (как у нас)</div><div class=\"mv cg\">"+fN(NET_US)+" тг/мес</div><div class=\"ms\">(35к-15к-6к) x "+WDAYS+" дней</div></div><div class=\"mc\"><div class=\"ml\">Доход водителя GSM в мес.1</div><div class=\"mv "+(m1.drvE>=NET_US?"cg":"cr")+"\">"+fN(Math.max(0,Math.round(m1.drvE)))+" тг/мес</div><div class=\"ms\">TPH "+m1.tph.toFixed(2)+" x "+HRS+"ч x "+WDAYS+"дн x "+fN(Math.round(m1.avg))+" тг x 25%</div></div><div class=\"mc\"><div class=\"ml\">Субсидия/водитель в мес.1</div><div class=\"mv cr\">"+fN(Math.round(m1.subPD))+" тг/мес</div><div class=\"ms\">gap, который GSM покрывает</div></div>";
+
+  // Economics explain
+  document.getElementById("eco").innerHTML="<div class=\"eb\"><div class=\"etit\">Методология расчёта GMV и дохода</div><div class=\"ecols\"><div><div class=\"ectit cb\">Доход водителя GSM</div><div class=\"erow\"><span class=\"el\">TPH x часов/день</span><span class=\"ev cb\">=поездок/день</span></div><div class=\"erow\"><span class=\"el\">x рабочих дней/мес</span><span class=\"ev cb\">=поездок/мес</span></div><div class=\"erow\"><span class=\"el\">x чек GSM x 25%</span><span class=\"ev cb\">=доход брутто</span></div><div class=\"erow\"><span class=\"el\">- мойка (13 x 500 тг)</span><span class=\"ev cr\">-"+fN(WASH_MON)+" тг</span></div><div class=\"erow\"><span class=\"el\">=чистый доход</span><span class=\"ev cg\">итого тг/мес</span></div><div class=\"fml\">= TPH x "+HRS+"ч x "+WDAYS+"дн x чек x 0.25 - "+fN(WASH_MON)+"</div><div style=\"margin-top:6px;font-size:11px;color:var(--text2)\">Если доход &lt; "+fN(NET_US)+" тг -> GSM доплачивает разницу</div></div><div><div class=\"ectit cg\">GMV и доход GSM</div><div class=\"erow\"><span class=\"el\">Активных = флот - простой</span><span class=\"ev cg\">авто</span></div><div class=\"erow\"><span class=\"el\">GMV/ч = TPH x активных x чек</span><span class=\"ev cg\">тг/час</span></div><div class=\"erow\"><span class=\"el\">GMV/день = x "+HRS+"ч</span><span class=\"ev cg\">тг/день</span></div><div class=\"erow\"><span class=\"el\">GMV/мес = x "+WDAYS+"дн</span><span class=\"ev cg\">=GMV тг</span></div><div class=\"erow\"><span class=\"el\">Выручка = GMV x 75% - скидки</span><span class=\"ev cg\">=Revenue тг</span></div><div class=\"fml\">Revenue = GMV x 0.75 - GMV x скидки%</div><div style=\"margin-top:6px;font-size:11px;color:var(--text2)\">Простой: "+Math.round(IDLE*100)+"% прироста флота не работает в мес. поставки</div></div></div></div>";
+
+  // PL
+  function plCard(tit,d){
+    var pos=d.ebitda>=0;
+    return "<div class=\"plc\"><div class=\"plh\"><div class=\"pltit\">"+tit+"</div><div class=\"bdg "+(pos?"bg":"br")+"\">EBITDA "+(pos?"+":"")+fM(d.ebitda)+"</div></div><div class=\"row\"><span class=\"rl\">Поездок за период</span><span class=\"rv cb\">"+fN(d.tt)+"</span></div><div class=\"row\"><span class=\"rl\">GMV</span><span class=\"rv cb\">"+fBr(d.gmv)+"</span></div><div class=\"row\"><span class=\"rl\">Скидки пассажирам</span><span class=\"rv ca\">-"+fBr(d.disc)+"</span></div><div class=\"row\"><span class=\"rls\" style=\"color:var(--green)\">Выручка GSM (75% GMV - скидки)</span><span class=\"rv cg\">"+fBr(d.rev)+"</span></div><div class=\"row sep\"><span class=\"rls\">Операционные расходы</span><span class=\"rv cr\">"+fBr(d.opex)+"</span></div><div class=\"row ind\"><span class=\"rl\">Субсидии водителям</span><span class=\"rv cr\">"+fBr(d.sub)+"</span></div><div class=\"row ind\"><span class=\"rl\">Зарядка + мойка + ТО</span><span class=\"rv cgr\">"+fBr(d.chrg+d.wm)+"</span></div><div class=\"row ind\"><span class=\"rl\">Привлечение водителей</span><span class=\"rv cgr\">"+fBr(d.acq)+"</span></div><div class=\"row ind\"><span class=\"rl\">ФОТ + аренда базы</span><span class=\"rv cgr\">"+fBr(d.fix)+"</span></div><div class=\"row sep\"><span class=\"rls\">EBITDA</span><span class=\"rv "+(pos?"cg":"cr")+"\">"+(pos?"+":"")+fBr(d.ebitda)+"</span></div></div>";
+  }
+  document.getElementById("pl").innerHTML=plCard("2026 — июнь–декабрь (7 мес.)",Y26)+plCard("2027 — полный год (3500 → 5500 авто)",Y27);
+
+  // Balance
+  var tot=Y26.ebitda+Y27.ebitda;
+  var cum=-capT;
+  var cumArr=mos.map(function(m){cum+=m.ebitda;return cum;});
+  var bIdx=cumArr.findIndex(function(v,i){return i>0&&v>=0&&cumArr[i-1]<0;});
+  var bLbl=bIdx>=0?ALBLR[bIdx]:"за горизонтом 2027";
+  document.getElementById("bal").innerHTML="<div class=\"mc\"><div class=\"ml\">Суммарный CAPEX</div><div class=\"mv cr\">"+fBr(capT)+"</div></div><div class=\"mc\"><div class=\"ml\">EBITDA за 2 года</div><div class=\"mv "+(tot>=0?"cg":"cr")+"\">"+(tot>=0?"+":"")+fBr(tot)+"</div></div><div class=\"mc\"><div class=\"ml\">Непокрытый остаток к дек.2027</div><div class=\"mv cr\">"+fBr(Math.max(0,capT-Math.max(0,tot)))+"</div></div><div class=\"mc\"><div class=\"ml\">Окупаемость CAPEX</div><div class=\"mv cgr\" style=\"font-size:13px\">"+bLbl+"</div></div>";
+
+  // Table
+  var th="<thead><tr><th>Месяц</th><th>Флот</th><th>Прирост</th><th>Простой</th><th>Активных</th><th>TPH</th><th>Поезд/день</th><th>Поездок/мес</th><th>GMV мес.</th><th>Скидки мес.</th><th>Выручка GSM мес.</th><th>Субсидии вод. мес.</th><th>Опекс мес.</th><th>EBITDA мес.</th></tr></thead><tbody>";
+  mos.forEach(function(m,i){
+    var sc=i===7?" class=\"ys\"":"";
+    var opF=m.chrgC+m.wmC+m.acqC+m.fixC;
+    th+="<tr"+sc+"><td><span class=\"tag "+(m.is27?"t27":"t26")+"\">"+(m.is27?ALBLR[i].replace("27","'27"):ALBLR[i].replace("26","'26"))+"</span></td><td>"+fN(m.fleet)+"</td><td>"+(m.newC>0?"+"+fN(m.newC):"—")+"</td><td>"+(m.idle>0?"<span class=\"cr\">-"+fN(m.idle)+"</span>":"—")+"</td><td style=\"font-weight:700\">"+fN(m.active)+"</td><td class=\"ct\">"+m.tph.toFixed(2)+"</td><td class=\"ct\">"+m.trDay.toFixed(1)+"</td><td style=\"font-weight:700;color:var(--text)\">"+fN(m.totT)+"</td><td class=\"cb\">"+fM(m.gmv)+"</td><td class=\"ca\">"+fM(m.discA)+" <span style=\"color:var(--text3);font-size:9px\">("+Math.round(m.dp*100)+"%)</span></td><td class=\"cg\">"+fM(m.rev)+"</td><td class=\""+(m.subPD>0?"cr":"cgr")+"\">"+(m.subT>0?fM(m.subT):"—")+"</td><td class=\"cgr\">"+fM(opF)+"</td><td class=\""+(m.ebitda>=0?"cg":"cr")+"\">"+fM(m.ebitda)+"</td></tr>";
+  });
+  var op26=Y26.chrg+Y26.wm+Y26.acq+Y26.fix,op27=Y27.chrg+Y27.wm+Y27.acq+Y27.fix;
+  th+="<tr class=\"yt\"><td>2026 итого</td><td></td><td></td><td></td><td></td><td></td><td></td><td class=\"cb\">"+fN(Y26.tt)+"</td><td class=\"cb\">"+fBr(Y26.gmv)+"</td><td class=\"ca\">"+fBr(Y26.disc)+"</td><td class=\"cg\">"+fBr(Y26.rev)+"</td><td class=\"cr\">"+fBr(Y26.sub)+"</td><td class=\"cgr\">"+fBr(op26)+"</td><td class=\""+(Y26.ebitda>=0?"cg":"cr")+"\">"+fBr(Y26.ebitda)+"</td></tr>";
+  th+="<tr class=\"yt\"><td>2027 итого</td><td></td><td></td><td></td><td></td><td></td><td></td><td class=\"cb\">"+fN(Y27.tt)+"</td><td class=\"cb\">"+fBr(Y27.gmv)+"</td><td class=\"ca\">"+fBr(Y27.disc)+"</td><td class=\"cg\">"+fBr(Y27.rev)+"</td><td class=\""+(Y27.sub>0?"cr":"cgr")+"\">"+fBr(Y27.sub)+"</td><td class=\"cgr\">"+fBr(op27)+"</td><td class=\""+(Y27.ebitda>=0?"cg":"cr")+"\">"+fBr(Y27.ebitda)+"</td></tr>";
+  document.getElementById("tbl").innerHTML=th+"</tbody>";
+
+  // Charts
+  if(c1)c1.destroy();
+  c1=new Chart(document.getElementById("c1"),{type:"bar",data:{labels:ALBLR,datasets:[{label:"Выручка GSM",data:mos.map(function(m){return+(m.rev/1e6).toFixed(1);}),backgroundColor:"rgba(76,175,125,0.85)",stack:"a"},{label:"Опекс",data:mos.map(function(m){return+(m.opex/1e6).toFixed(1);}),backgroundColor:"rgba(224,85,85,0.75)",stack:"b"},{label:"EBITDA",data:mos.map(function(m){return+(m.ebitda/1e6).toFixed(1);}),type:"line",borderColor:"#4a9edd",backgroundColor:"transparent",pointBackgroundColor:mos.map(function(m){return m.ebitda>=0?"#4caf7d":"#e05555";}),pointRadius:4,tension:.3,borderWidth:2,yAxisID:"y"}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.dataset.label+": "+c.parsed.y+" млн тг";}}}},scales:{y:{ticks:{callback:function(v){return v+" млн";},color:"#9191a0"},grid:{color:"#23232a"}},x:{ticks:{autoSkip:false,maxRotation:45,font:{size:10},color:"#9191a0"},grid:{color:"#23232a"}}}}});
+
+  var cB=cumArr.map(function(v){return+(v/1e9).toFixed(3);});
+  document.getElementById("pbn").innerHTML="<strong>Точка окупаемости: "+bLbl+".</strong> Старт: минус CAPEX "+fBr(capT)+". Без амортизации авто и стоимости капитала.";
+  if(c2)c2.destroy();
+  c2=new Chart(document.getElementById("c2"),{type:"line",data:{labels:ALBLR,datasets:[{label:"Cash flow",data:cB,borderColor:"#4a9edd",backgroundColor:"rgba(74,158,221,0.07)",fill:true,tension:.3,pointBackgroundColor:cB.map(function(v){return v>=0?"#4caf7d":"#e05555";}),pointRadius:4,borderWidth:2},{label:"Ноль",data:ALBLR.map(function(){return 0;}),borderColor:"#5a5a6a",borderDash:[6,4],borderWidth:1,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.dataset.label+": "+c.parsed.y.toFixed(2)+" млрд тг";}}}},scales:{y:{ticks:{callback:function(v){return v+" млрд";},color:"#9191a0"},grid:{color:"#23232a"}},x:{ticks:{autoSkip:false,maxRotation:45,font:{size:10},color:"#9191a0"},grid:{color:"#23232a"}}}}});
+}
+go();
+</script>
+</body>
+</html>
